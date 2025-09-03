@@ -1,4 +1,11 @@
 import express, { Response, Request, Application } from "express";
+import {
+  createTodo,
+  deleteTodo,
+  getAllTodo,
+  getTodoById,
+  updateTodo,
+} from "./controllers/todo-controller";
 
 const PORT = 8000;
 
@@ -57,6 +64,13 @@ const deleteData = (req: Request, res: Response) => {
 
 // Method DELETE -> Untuk menghapus data
 app.delete("/api/:id", deleteData);
+
+// Todo route
+app.get("/api/todo", getAllTodo);
+app.get("/api/todo/:id", getTodoById);
+app.post("/api/todo", createTodo);
+app.patch("/api/todo/:id", updateTodo);
+app.delete("/api/todo/:id", deleteTodo);
 
 app.listen(PORT, () => {
   console.log(`Application run on => http://localhost:${PORT}`);
