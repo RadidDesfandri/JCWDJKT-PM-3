@@ -8,19 +8,35 @@
     "date": "2025-07-03T17:42:08.261Z"
   },
   {
-    "id": 2,
+    "id": 3,
+    "title": "Beli mie goreng",
+    "nominal": 5000,
+    "type": "expense",
+    "category": "food",
+    "date": "2025-09-03T17:42:08.261Z"
+  },
+  {
+    "id": 4,
+    "title": "Beli ketoprak",
+    "nominal": 10000,
+    "type": "expense",
+    "category": "food",
+    "date": "2025-09-04T03:40:58.400Z"
+  },
+  {
+    "id": 5,
     "title": "Makan Siang",
     "nominal": 50000,
     "type": "expense",
     "category": "food",
-    "date": "2025-08-03T17:42:08.261Z"
+    "date": "2025-08-04T03:56:16.760Z"
   },
   {
-    "id": 3,
-    "title": "Beli martabak",
-    "nominal": 100000,
-    "type": "expense",
-    "category": "food",
-    "date": "2025-09-03T17:42:08.261Z"
+    "id": 6,
+    "title": "Gaji Parttime",
+    "nominal": 2000000,
+    "type": "income",
+    "category": "salary",
+    "date": "2025-07-20T17:42:08.261Z"
   }
 ]
