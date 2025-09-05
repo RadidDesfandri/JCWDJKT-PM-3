@@ -1,34 +1,35 @@
 import express, { Response, Request, Application } from "express";
-import {
-  create,
-  deleteExpense,
-  getAll,
-  getDetail,
-  getTotalByCategory,
-  getTotalByDateRange,
-  update,
-} from "./controllers/expense.controller";
+import ExpenseRouteV1 from "./routers/expense-v1.router";
 
-const PORT = 8000;
-const app: Application = express();
+class Server {
+  private port: number;
+  private app: Application;
 
-app.use(express.json());
+  constructor(port: number) {
+    this.port = port;
+    this.app = express();
+    this.routes();
+    this.middlewares();
+  }
 
-app.get("/", (req: Request, res: Response) => {
-  return res.status(200).send("Welcome to expense tracker api");
-});
+  private middlewares() {
+    this.app.use(express.json());
+  }
 
-app.get("/api/expenses", getAll);
-app.get("/api/expenses/report/date-range", getTotalByDateRange);
-app.get("/api/expenses/report/category", getTotalByCategory);
-app.get("/api/expenses/:id", getDetail);
+  private routes() {
+    this.app.get("/", (req: Request, res: Response) => {
+      res.status(200).send("Welcome to expense tracker api");
+    });
 
-app.post("/api/expenses", create);
+    this.app.use("/api", ExpenseRouteV1);
+  }
 
-app.patch("/api/expenses/:id", update);
+  public listen() {
+    this.app.listen(this.port, () => {
+      console.log(`Application run on => http://localhost:${this.port}`);
+    });
+  }
+}
 
-app.delete("/api/expenses/:id", deleteExpense);
-
-app.listen(PORT, () => {
-  console.log(`Application run on => http://localhost:${PORT}`);
-});
+const server = new Server(8000);
+server.listen();
