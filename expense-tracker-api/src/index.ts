@@ -1,5 +1,7 @@
 import express, { Response, Request, Application } from "express";
 import ExpenseRouteV1 from "./routers/expense-v1.router";
+import ExpenseRouteV2 from "./routers/expense-v2.router";
+import { db } from "./config/db";
 
 class Server {
   private port: number;
@@ -8,8 +10,15 @@ class Server {
   constructor(port: number) {
     this.port = port;
     this.app = express();
-    this.routes();
+    
     this.middlewares();
+    this.routes();
+    
+    this.initDatabase();
+  }
+
+  public async initDatabase() {
+    await db.connect();
   }
 
   private middlewares() {
@@ -22,6 +31,7 @@ class Server {
     });
 
     this.app.use("/api", ExpenseRouteV1);
+    this.app.use("/api/expenses-v2", ExpenseRouteV2);
   }
 
   public listen() {
