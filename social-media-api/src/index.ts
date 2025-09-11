@@ -1,11 +1,11 @@
-import { PrismaClient } from "@prisma/client";
 import express, { Application, Request, Response } from "express";
-import { Database } from "./config/prisma";
+import authRouter from "./routers/auth.router";
+import userRouter from "./routers/user.router";
+import postRouter from "./routers/post.router";
 
 class Server {
   private port: number;
   private app: Application;
-  private prisma: PrismaClient;
 
   constructor(port: number) {
     this.port = port;
@@ -14,7 +14,6 @@ class Server {
     this.middlewares();
 
     this.routes();
-    this.prisma = new Database().getInstance();
   }
 
   private middlewares() {
@@ -26,22 +25,9 @@ class Server {
       res.status(200).send("Welcome to social media api");
     });
 
-    this.app.get("/user", async (req: Request, res: Response) => {
-      //   const user = await this.prisma.user.create({
-      //     data: {
-      //       email: "radid@gmail.com",
-      //       password: "1234567",
-      //     },
-      //   });
-
-      const user = await this.prisma.user.findMany();
-
-      res.status(200).send({
-        status: 200,
-        msg: "create user",
-        user,
-      });
-    });
+    this.app.use("/api/auth", authRouter);
+    this.app.use("/api/users", userRouter);
+    this.app.use("/api/posts", postRouter);
   }
 
   public listen() {
