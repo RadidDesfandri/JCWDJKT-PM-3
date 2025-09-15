@@ -2,6 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { Database } from "../config/prisma";
 import { Login, Register } from "../types/user-type";
+import { compare, genSalt, hash } from "bcrypt";
+import { sign } from "jsonwebtoken";
+import { createToken } from "../helpers/token";
 
 class AuthController {
   private prisma: PrismaClient;
@@ -34,12 +37,15 @@ class AuthController {
         });
       }
 
+      const salt = await genSalt(10);
+      const hashPassword = await hash(password, salt);
+
       // Jika tidak tersedia buat user baru
       const user = await this.prisma.user.create({
         data: {
           email,
           name,
-          password,
+          password: hashPassword,
         },
         // Select untuk mengambil data yang diperlukan
         select: {
@@ -88,7 +94,7 @@ class AuthController {
       }
 
       // Periksa apakah password database sama dengan password yang dimasukkan user
-      const isValidPassword = user.password === password;
+      const isValidPassword = await compare(password, user.password);
 
       // Return jika password salahF
       if (!isValidPassword) {
@@ -98,15 +104,18 @@ class AuthController {
         });
       }
 
+      const jwtPayload = { id: user.id, email: user.email };
+      const token = createToken(jwtPayload);
+
       return res.json({
         status: 200,
         msg: "Login berhasil",
-        token: crypto.randomUUID(),
         user: {
           id: user.id,
           email: user.email,
           name: user.name,
         },
+        token,
       });
     } catch (error) {
       console.log("Error:", error);

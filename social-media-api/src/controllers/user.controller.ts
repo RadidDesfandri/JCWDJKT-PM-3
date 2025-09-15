@@ -35,7 +35,7 @@ class UserController {
 
   public detail = async (req: Request, res: Response) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user?.id;
 
       const user = await this.prisma.user.findUnique({
         where: { id: Number(userId) },
@@ -69,7 +69,7 @@ class UserController {
 
   public update = async (req: Request, res: Response) => {
     try {
-      const { userId } = req.params;
+      const userId = req.user?.id;
       const { name } = req.body;
 
       const user = await this.prisma.user.findUnique({
@@ -110,7 +110,7 @@ class UserController {
 
   public getUserPost = async (req: Request, res: Response) => {
     try {
-      const userId = Number(req.params.userId);
+      const userId = Number(req.user?.id);
 
       const user = await this.prisma.user.findUnique({
         where: { id: Number(userId) },
@@ -153,27 +153,6 @@ class UserController {
       });
     }
   };
-
-  // sendMailVerif & OTP -> /user/verif
-  // checkOtp -> /user/check-otp
-  // updateEmail -> /user/update-email
-
-  // updatePassword
-
-  //   public login = async (req: Request, res: Response) => {
-  //     try {
-  //       return res.json({
-  //         status: 200,
-  //         msg: "Hit api",
-  //       });
-  //     } catch (error) {
-  //       console.log("Error:", error);
-  //       return res.status(500).send({
-  //         status: 500,
-  //         msg: `Error: ${error}`,
-  //       });
-  //     }
-  //   };
 }
 
 export default UserController;

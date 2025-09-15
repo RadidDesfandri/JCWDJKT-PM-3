@@ -107,14 +107,7 @@ class PostController {
 
   public create = async (req: Request, res: Response) => {
     try {
-      const { text, image, userId } = req.body;
-
-      if (!userId || typeof userId !== "number") {
-        return res.status(400).send({
-          status: 400,
-          msg: "UserId harus ada untuk membuat postingan, dan harus number",
-        });
-      }
+      const { text, image } = req.body;
 
       if (!text) {
         return res.status(400).send({
@@ -127,7 +120,7 @@ class PostController {
         data: {
           text,
           image,
-          userId: Number(userId),
+          userId: Number(req.user?.id),
         },
       });
 
@@ -147,7 +140,7 @@ class PostController {
 
   public update = async (req: Request, res: Response) => {
     try {
-      const { userId, postId } = req.params;
+      const { postId } = req.params;
       const { text, image } = req.body;
 
       const post = await this.prisma.post.findUnique({
@@ -161,11 +154,10 @@ class PostController {
         });
       }
 
-      // Untuk periksa apakah user mempunyai akses untuk edit
-      if (Number(userId) !== post.userId) {
+      if (Number(req.user?.id) !== Number(post.userId)) {
         return res.status(400).send({
           status: 400,
-          msg: "Tidak bisa merubah postingan jika bukan owner",
+          msg: "Tidak dapat rubah jika bukan creator",
         });
       }
 
@@ -193,7 +185,7 @@ class PostController {
 
   public delete = async (req: Request, res: Response) => {
     try {
-      const { userId, postId } = req.params;
+      const { postId } = req.params;
 
       const post = await this.prisma.post.findUnique({
         where: { id: Number(postId) },
@@ -207,7 +199,7 @@ class PostController {
       }
 
       // Untuk periksa apakah user mempunyai akses untuk hapus
-      if (Number(userId) !== post.userId) {
+      if (Number(req.user?.id) !== post.userId) {
         return res.status(400).send({
           status: 400,
           msg: "Tidak bisa menghapus postingan jika bukan owner",
@@ -235,16 +227,9 @@ class PostController {
   public createComment = async (req: Request, res: Response) => {
     try {
       const postId = Number(req.params.postId);
-      const { userId, text } = req.body;
+      const { text } = req.body;
 
-      if (typeof userId !== "number") {
-        return res.status(400).send({
-          status: 400,
-          msg: "Tipe data user id harus number",
-        });
-      }
-
-      if (!userId || !text) {
+      if (!text) {
         return res.status(400).send({
           status: 400,
           msg: "User dan text wajib diisi",
@@ -265,7 +250,7 @@ class PostController {
       const comment = await this.prisma.comment.create({
         data: {
           text,
-          userId,
+          userId: Number(req.user?.id),
           postId,
         },
         include: {
@@ -295,14 +280,7 @@ class PostController {
   public like = async (req: Request, res: Response) => {
     try {
       const postId = Number(req.params.postId);
-      const { userId } = req.body;
-
-      if (typeof userId !== "number") {
-        return res.status(400).send({
-          status: 400,
-          msg: "Tipe data user id harus number",
-        });
-      }
+      const userId = Number(req.user?.id);
 
       const post = await this.prisma.post.findUnique({
         where: { id: postId },
