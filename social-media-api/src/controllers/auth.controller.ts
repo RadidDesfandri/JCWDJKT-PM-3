@@ -46,12 +46,14 @@ class AuthController {
           email,
           name,
           password: hashPassword,
+          avatar: `https://ui-avatars.com//api//?name=${name}&color=FFFFFF&background=2e2e2e&length=1`,
         },
         // Select untuk mengambil data yang diperlukan
         select: {
           id: true,
           name: true,
           email: true,
+          avatar: true,
         },
       });
 
@@ -114,6 +116,7 @@ class AuthController {
           id: user.id,
           email: user.email,
           name: user.name,
+          avatar: user.avatar,
         },
         token,
       });

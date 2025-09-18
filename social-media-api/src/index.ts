@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import authRouter from "./routers/auth.router";
 import userRouter from "./routers/user.router";
 import postRouter from "./routers/post.router";
+import cors from "cors";
 
 class Server {
   private port: number;
@@ -17,6 +18,7 @@ class Server {
   }
 
   private middlewares() {
+    this.app.use(cors());
     this.app.use(express.json());
   }
 

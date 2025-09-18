@@ -16,7 +16,7 @@ class PostRouter {
   }
 
   public initializeRoute() {
-    this.router.get("/", this.controller.all);
+    this.router.get("/", this.middleware.verifyUserToken, this.controller.all);
     this.router.get("/:postId", this.controller.detail);
 
     this.router.post(

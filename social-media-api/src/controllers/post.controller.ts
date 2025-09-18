@@ -36,12 +36,21 @@ class PostController {
               comments: true,
             },
           },
+          likes: {
+            where: { userId: Number(req.user?.id) },
+            select: { id: true },
+          },
         },
       });
 
+      const data = posts.map((post) => ({
+        ...post,
+        isLiked: post.likes.length > 0,
+      }));
+
       return res.json({
         status: 200,
-        data: posts,
+        data,
       });
     } catch (error) {
       console.log("Error: ", error);
