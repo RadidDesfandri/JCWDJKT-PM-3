@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from "express";
 import authRouter from "./routers/auth.router";
 import userRouter from "./routers/user.router";
 import postRouter from "./routers/post.router";
+import invoiceRouter from "./routers/invoice.router";
 import cors from "cors";
 
 class Server {
@@ -30,6 +31,7 @@ class Server {
     this.app.use("/api/auth", authRouter);
     this.app.use("/api/users", userRouter);
     this.app.use("/api/posts", postRouter);
+    this.app.use("/api/invoices", invoiceRouter);
   }
 
   public listen() {

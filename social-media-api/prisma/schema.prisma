@@ -14,8 +14,8 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
+  id       Int     @id @default(autoincrement())
+  email    String  @unique
   password String
   name     String
   avatar   String?
@@ -26,6 +26,7 @@ model User {
   posts    Post[]
   likes    Like[]
   comments Comment[]
+  invoices Invoice[]
 
   @@map("users")
 }
@@ -77,4 +78,28 @@ model Like {
 
   @@unique([userId, postId])
   @@map("likes")
+}
+
+model Invoice {
+  id         String  @id @default(uuid())
+  externalId String?
+
+  status      StatusInvoice @default(PENDING)
+  amount      Int
+  description String?
+  paymentUrl  String?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("invoices")
+}
+
+enum StatusInvoice {
+  PENDING
+  PAID
+  FAILED
 }
